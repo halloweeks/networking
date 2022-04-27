@@ -3,7 +3,11 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <pthread.h>
+#include <pthread.h> // multi threading for using
+
+// this header included for count execution time
+#include <time.h>
+#include <iomanip>
 
 // maximum concurrent connections
 #define CONCURRENT_CONNECTION 1
@@ -100,6 +104,21 @@ int main(int argc, char *argv[]) {
 
 // This will handle connection for each client
 void *connection_handler(void *sock_fd) {
+	/* clock_t clock(void) returns the number of clock ticks 
+
+       elapsed since the program was launched.To get the number  
+
+       of seconds used by the CPU, you will need to divide by  
+
+       CLOCKS_PER_SEC.where CLOCKS_PER_SEC is 1000000 on typical 
+
+       32 bit system.  */
+
+    clock_t start, end; 
+	
+	// Recording the starting clock tick.
+    start = clock(); 
+	
 	// Get the socket descriptor
 	int* conn_id = new int(*(int*)sock_fd);
 		
@@ -145,6 +164,16 @@ void *connection_handler(void *sock_fd) {
 	delete (int*)sock_fd;
 	delete conn_id;
 	
-	// exiting
+	// Recording the end clock tick. 
+    end = clock();
+    
+    // Calculating total time taken by the program. 
+    double time_taken = double(end - start) / double(CLOCKS_PER_SEC); 
+
+    std::cout << "[TIME] PROCESS COMPLETE IN " << std::fixed << time_taken << std::setprecision(5); 
+    std::cout << "sec" << std::endl;
+	
+	
+	// exiting thread function
 	pthread_exit(NULL);
 } 

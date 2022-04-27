@@ -1,18 +1,26 @@
-# networking
+<h4>C++ tcp server support multi threading</h4>
+<h4>Handling limit per second 20 concurrent connection</h4>
 
-<p>Download code</p>
+
+<p>Open terminal paste command</p>
 
 ```
 git clone https://github.com/halloweeks/networking.git
 ```
 
-<p>Run build.sh to compile source code</p>
+<p>Change directory</p>
 
 ```
-cd networking && bash build.sh
+cd networking
 ```
 
-<p>outputs</p>
+<p>Automatic build you need to run build.sh</p>
+
+```
+bash build.sh
+```
+
+<p>You got output executable file</p>
 
 ```
 ./server.exe

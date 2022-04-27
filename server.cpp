@@ -105,15 +105,10 @@ int main(int argc, char *argv[]) {
 // This will handle connection for each client
 void *connection_handler(void *sock_fd) {
 	/* clock_t clock(void) returns the number of clock ticks 
-
-       elapsed since the program was launched.To get the number  
-
+	   elapsed since the program was launched.To get the number  
        of seconds used by the CPU, you will need to divide by  
-
        CLOCKS_PER_SEC.where CLOCKS_PER_SEC is 1000000 on typical 
-
        32 bit system.  */
-
     clock_t start, end; 
 	
 	// Recording the starting clock tick.
@@ -121,7 +116,7 @@ void *connection_handler(void *sock_fd) {
 	
 	// Get the socket descriptor
 	int* conn_id = new int(*(int*)sock_fd);
-		
+	
 	// allocate memory for buffer
 	char* buffer = new char[BUFFER_SIZE];
 	
@@ -129,10 +124,10 @@ void *connection_handler(void *sock_fd) {
 	const char* response = "Hello, client!";
 	
 	// receiving messages from client
-	if (recv(*conn_id, buffer, BUFFER_SIZE, 0) == -1) {
-		std::cout << "[WARNING] FAILED TO READ PACKETS" << std::endl;
-	} else {
+	if (recv(*conn_id, buffer, BUFFER_SIZE, 0) > 0) {
 		std::cout << "[REQUEST] " << buffer << std::endl;
+	} else {
+		std::cout << "[WARNING] FAILED TO READ BUFFER" << std::endl;
 	}
 	
 	// send message to client
@@ -146,10 +141,10 @@ void *connection_handler(void *sock_fd) {
 	if (pthread_detach(pthread_self()) == 0) {
 		std::cout << "[INFO] THREAD TERMINATED\n";
 	} else {
-		std::cout << "[ERROR] CAN'T TERMINATE THREAD\n";
+		std::cout << "[WARNING] CAN'T TERMINATE THREAD\n";
 	}
 	
-	// close client connection
+	// terminate client connection
 	if (close(*conn_id) == 0) {
 		std::cout << "[INFO] CONNECTION CLOSED\n";
 	} else {
@@ -172,7 +167,6 @@ void *connection_handler(void *sock_fd) {
 
     std::cout << "[TIME] PROCESS COMPLETE IN " << std::fixed << time_taken << std::setprecision(5); 
     std::cout << "sec" << std::endl;
-	
 	
 	// exiting thread function
 	pthread_exit(NULL);

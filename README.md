@@ -1,11 +1,23 @@
 # networking
 
-## compilation 
+<p>Download code</p>
 
 ```
-g++ server.cpp -o server.exe -std=c++17 -lpthread
+git clone https://github.com/halloweeks/networking.git
+```
+
+<p>Run build.sh to compile source code</p>
+
+```
+bash build.sh
+```
+
+<p>outputs</p>
+
+```
+./server.exe
 ```
 
 ```
-g++ client.cpp -o client.exe -std=c++17
+./client.exe
 ```

@@ -10,7 +10,7 @@
 #include <iomanip>
 
 // maximum concurrent connections
-#define CONCURRENT_CONNECTION 1
+#define CONCURRENT_CONNECTION 20
 
 // max connection requests queued
 #define QUEUE_CONNECTION 40

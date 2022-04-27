@@ -13,6 +13,6 @@ mkdir build
 cd build
 cmake ..
 make
-cp server ../
-cp client ../
+cp server.exe ../
+cp client.exe ../
 rm -rf ../build

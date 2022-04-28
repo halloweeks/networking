@@ -2,7 +2,8 @@
 <h4>Handling limit per second 20 concurrent connection</h4>
 
 <p>you can change concurrent connection limit from</br>
-your #define CONCURRENT_CONNECTION 20</p>
+your</p>
+<b>#define CONCURRENT_CONNECTION 20</b>
 
 <p>Open terminal paste command</p>
 

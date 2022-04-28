@@ -38,6 +38,9 @@ int main(int argc, char *argv[]) {
 	int master_socket, conn_id, len;
 	struct sockaddr_in server, client;
 	
+	memset(&server, 0, sizeof(server));
+	memset(&client, 0, sizeof(client));
+	
 	// creating master socket
 	if ((master_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		std::cout << "[ERROR] CAN'T CREATE TO SOCKET\n";

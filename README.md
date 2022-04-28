@@ -1,6 +1,8 @@
 <h4>C++ tcp server support multi threading</h4>
 <h4>Handling limit per second 20 concurrent connection</h4>
 
+<p>you can change concurrent connection limit from</br>
+your #define CONCURRENT_CONNECTION 20</p>
 
 <p>Open terminal paste command</p>
 

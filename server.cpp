@@ -1,25 +1,25 @@
-#include <iostream>
-#include <string>
+#include <iostream> // input output
+#include <string> // strlen string
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <pthread.h> // multi threading for using
+#include <pthread.h> // multi threading
 
 // this header included for count execution time
 #include <time.h>
 #include <iomanip>
 
+// port number
+#define PORT 8888
+
 // maximum concurrent connections
 #define CONCURRENT_CONNECTION 20
 
-// max connection requests queued
+// maximum connection requests queued
 #define QUEUE_CONNECTION 40
 
-// default port number
-#define PORT 8888
-
-// default buffer size 1024 bytes
-#define BUFFER_SIZE 5
+// buffer size 1024 bytes
+#define BUFFER_SIZE 1024
 
 // currently connections
 int connection = 0;
@@ -28,12 +28,11 @@ int connection = 0;
 void *connection_handler(void *);
 
 int main(int argc, char *argv[]) {
-	// thread identifier
+	// thread
 	pthread_t thread_id;
-	
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
-	pthread_attr_setstacksize(&attr, 1024);
+	pthread_attr_setstacksize(&attr, 65536);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	
 	int master_socket, conn_id, len;
@@ -54,7 +53,7 @@ int main(int argc, char *argv[]) {
     
     len = sizeof(struct sockaddr_in);
     
-    // binding socket
+    // binding address and port
     if (bind(master_socket, (struct sockaddr *)&server , sizeof(server)) == -1) {
     	perror("[ERROR]");
         return 0;
@@ -69,7 +68,7 @@ int main(int argc, char *argv[]) {
     } else {
     	std::cout << "[INFO] WAITING FOR INCOMING CONNECTIONS\n";
     }
-	
+    
 	// infinity loop
     while (true) {
     	// accept new connections
@@ -78,13 +77,12 @@ int main(int argc, char *argv[]) {
         // if connection not accepted
         if (conn_id == -1) {
         	std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION\n";
-            return 0;
         } else {
         	// if connection limit reached
         	if (connection >= CONCURRENT_CONNECTION) {
         	    std::cout << "[WARNING] CONNECTION LIMITE REACHED" << std::endl;
-                send(conn_id, "SERVER IS BUSY.", 15, 0);
-                close(conn_id);
+                send(conn_id, "SERVER IS BUSY.", 15, 0); // send server full to client
+                close(conn_id); // close connection if connection limit reached
         	} else {
         	    std::cout << "[INFO] NEW CONNECTION ACCEPTED\n";
                 // create thread for new connection
@@ -114,50 +112,47 @@ void *connection_handler(void *sock_fd) {
 	// Recording the starting clock tick.
     start = clock(); 
 	
-	// Get the socket descriptor
-	int* conn_id = new int(*(int*)sock_fd);
+	// byte size.    Get the socket descriptor
+	int read_byte, conn_id = *(int*)sock_fd;
 	
-	// allocate memory for buffer
-	char* buffer = new char[BUFFER_SIZE];
+	// storing request data
+	char buffer[BUFFER_SIZE];
 	
 	// server response message
 	const char* response = "Hello, client!";
 	
-	// receiving messages from client
-	if (recv(*conn_id, buffer, BUFFER_SIZE, 0) > 0) {
+	// request message
+	if ((read_byte = recv(conn_id, buffer, BUFFER_SIZE, 0)) > 0) {
+		// print request message
 		std::cout << "[REQUEST] " << buffer << std::endl;
-	} else {
-		std::cout << "[WARNING] FAILED TO READ BUFFER" << std::endl;
+		// send response
+		if (send(conn_id, response, strlen(response), 0) == -1) {
+			std::cout << "[WARNING] CAN'T SEND RESPONSE" << std::endl;
+		} else {
+			std::cout << "[RESPONSE] " << response << std::endl;
+		}
 	}
 	
-	// send message to client
-	if (send(*conn_id, response, strlen(response), 0) == -1) {
-		std::cout << "[WARNING] CAN'T SEND RESPONSE\n";
+	// if connection already closed from client side
+	if (read_byte == 0) {
+		std::cout << "[INFO] CONNECTION CLOSED FROM CLIENT" << std::endl;
 	} else {
-		std::cout << "[RESPONSE] " << response << std::endl;
+		// terminate connection
+		if (close(conn_id) == 0) {
+			std::cout << "[INFO] CONNECTION CLOSED\n";
+		} else {
+			std::cout << "[ERROR] CAN'T CLOSE CONNECTION\n";
+		}
 	}
 	
-	// terminate thread process
-	if (pthread_detach(pthread_self()) == 0) {
-		std::cout << "[INFO] THREAD TERMINATED\n";
-	} else {
-		std::cout << "[WARNING] CAN'T TERMINATE THREAD\n";
-	}
-	
-	// terminate client connection
-	if (close(*conn_id) == 0) {
-		std::cout << "[INFO] CONNECTION CLOSED\n";
-	} else {
-		std::cout << "[ERROR] CAN'T CLOSE CONNECTION\n";
-	}
+	// clear buffer data
+	memset(buffer, 0, BUFFER_SIZE);
 	
 	// decrease connection counts
 	connection--;
 	
-	// deallocate memory
-	delete[] buffer;
-	delete (int*)sock_fd;
-	delete conn_id;
+	// before exiting the thread 
+	std::cout << "[INFO] THREAD TERMINATED" << std::endl;
 	
 	// Recording the end clock tick. 
     end = clock();
@@ -166,8 +161,10 @@ void *connection_handler(void *sock_fd) {
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC); 
 
     std::cout << "[TIME] PROCESS COMPLETE IN " << std::fixed << time_taken << std::setprecision(5); 
-    std::cout << "sec" << std::endl;
+    std::cout << " SEC" << std::endl;
 	
-	// exiting thread function
+	std::cout << "------------------------" << std::endl;
+	
+	// exiting
 	pthread_exit(NULL);
 } 

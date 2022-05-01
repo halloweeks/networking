@@ -1,5 +1,5 @@
 <h4>C++ tcp server support multi threading</h4>
-<p>Handling default 20 concurrent connection</p>
+<p>Handling default 10 concurrent connection</p>
 
 <p>Open terminal paste command</p>
 

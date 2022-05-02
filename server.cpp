@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 	
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_addr.s_addr = inet_addr("127.0.0.1");
     server.sin_port = htons(PORT);
     
     len = sizeof(struct sockaddr_in);
@@ -119,13 +119,16 @@ void *connection_handler(void *sock_fd) {
 	// Recording the starting clock tick.
     start = clock(); 
 	
-	// byte size.    Get the socket descriptor
-	int read_byte, conn_id = *(int*)sock_fd;
+	// byte size
+	int read_byte = 0;
 	
-	// client request data
+	// Get the socket descriptor
+	int conn_id = *(int*)sock_fd;
+	
+	// request data
 	char buffer[BUFFER_SIZE];
 	
-	// server response message
+	// response data
 	const char* response = "Hello, client!";
 	
 	// request message
@@ -152,6 +155,8 @@ void *connection_handler(void *sock_fd) {
 	
 	// thread automatically terminate after exit connection handler
 	std::cout << "[INFO] THREAD TERMINATED" << std::endl;
+	
+	delete (int*)sock_fd;
 	
 	// Recording the end clock tick. 
     end = clock();

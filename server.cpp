@@ -10,6 +10,9 @@
 #include <time.h>
 #include <iomanip>
 
+// server address
+#define ADDRESS "127.0.0.1"
+
 // port number
 #define PORT 8888
 
@@ -55,7 +58,7 @@ int main(int argc, char *argv[]) {
 	
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server.sin_addr.s_addr = inet_addr(ADDRESS);
     server.sin_port = htons(PORT);
     
     len = sizeof(struct sockaddr_in);

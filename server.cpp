@@ -4,9 +4,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <pthread.h> // multi threading
-#include <fstream>
 
-// this header included for count execution time
+// Included for count execution time
 #include <time.h>
 #include <iomanip>
 

@@ -117,13 +117,13 @@ int main(int argc, char *argv[]) {
 void *connection_handler(void *sock_fd) {
 	/* clock_t clock(void) returns the number of clock ticks 
 	   elapsed since the program was launched.To get the number  
-       of seconds used by the CPU, you will need to divide by  
-       CLOCKS_PER_SEC.where CLOCKS_PER_SEC is 1000000 on typical 
-       32 bit system.  */
-    clock_t start, end; 
+           of seconds used by the CPU, you will need to divide by  
+           CLOCKS_PER_SEC.where CLOCKS_PER_SEC is 1000000 on typical 
+           32 bit system.  */
+	clock_t start, end; 
 	
 	// Recording the starting clock tick.
-    start = clock(); 
+	start = clock(); 
 	
 	// byte size
 	int read_byte = 0;
@@ -143,9 +143,9 @@ void *connection_handler(void *sock_fd) {
 		std::cout << "[REQUEST] " << buffer << std::endl;
 		// send response
 		if (send(conn_id, response, strlen(response), 0) > 0) {
-			std::cout << "[RESPONSE] " << response << std::endl;
+		    std::cout << "[RESPONSE] " << response << std::endl;
 		} else {
-			std::cout << "[WARNING] CAN'T SEND RESPONSE" << std::endl;
+		    std::cout << "[WARNING] CAN'T SEND RESPONSE" << std::endl;
 		}
 	}
 	
@@ -165,14 +165,14 @@ void *connection_handler(void *sock_fd) {
 	delete (int*)sock_fd;
 	
 	// Recording the end clock tick. 
-    end = clock();
+	end = clock();
     
-    // Calculating total time taken by the program. 
-    double time_taken = double(end - start) / double(CLOCKS_PER_SEC); 
+	// Calculating total time taken by the program. 
+	double time_taken = double(end - start) / double(CLOCKS_PER_SEC); 
     
-    // print process time
-    std::cout << "[TIME] PROCESS COMPLETE IN " << std::fixed << time_taken << std::setprecision(5); 
-    std::cout << " SEC" << std::endl;
+	// print process time
+	std::cout << "[TIME] PROCESS COMPLETE IN " << std::fixed << time_taken << std::setprecision(5); 
+	std::cout << " SEC" << std::endl;
 	
 	// print line
 	std::cout << "------------------------" << std::endl;

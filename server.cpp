@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 	
 	// Listen on the socket, with 40 max connection requests queued
 	if (listen(master_socket, QUEUE_CONNECTION) == -1) {
-    	    std::cout << "[ERROR] CAN'T LISTEN\n";
+    	    std::cout << "[ERROR][LISTEN] " << strerror(errno) << "\n";
             return 0;
 	} else {
     	    std::cout << "[INFO] WAITING FOR INCOMING CONNECTIONS\n";
@@ -89,19 +89,20 @@ int main(int argc, char *argv[]) {
         
              // if connection not accepted
              if (conn_id == -1) {
-        	 std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION\n";
+                 std::cout << "[WARNING] " << strerror(errno) << "\n":
+        	 // std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION\n";
              } else {
         	 // if connection limit reached
         	 if (connection >= CONCURRENT_CONNECTION) {
         	     std::cout << "[WARNING] CONNECTION LIMITE REACHED" << std::endl;
-                     send(conn_id, "SERVER IS BUSY.", 15, 0); // send server full to client
-                     close(conn_id); // close connection if connection limit reached
+                     send(conn_id, "server is busy. please try again later.", 39, 0);
+                     close(conn_id); // close connection
         	 } else {
         	     std::cout << "[INFO] NEW CONNECTION ACCEPTED\n";
                      // create new thread for new connection
                      if (pthread_create(&thread_id, &attr, connection_handler, new int(conn_id)) == -1) {
-                	 std::cout << "[WARNING] CAN'T CREATE NEW THREAD\n";
-                         // if the thread is not made then we will close the client connection
+                         std::cout << "[WARNING][THREAD] " << strerror(errno) << "\n";
+                	 // std::cout << "[WARNING] CAN'T CREATE NEW THREAD\n";
                          close(conn_id);
                      } else {
                 	 std::cout << "[INFO] NEW THREAD CREATED\n";
@@ -145,7 +146,7 @@ void *connection_handler(void *sock_fd) {
 		if (send(conn_id, response, strlen(response), 0) > 0) {
 		    std::cout << "[RESPONSE] " << response << std::endl;
 		} else {
-		    std::cout << "[WARNING] CAN'T SEND RESPONSE" << std::endl;
+		    std::cout << "[WARNING][SEND] " << strerror(errno) << "\n";
 		}
 	}
 	

@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
         
              // if connection not accepted
              if (conn_id == -1) {
-                 std::cout << "[WARNING] " << strerror(errno) << "\n":
+                 std::cout << "[WARNING] " << strerror(errno) << "\n";
         	 // std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION\n";
              } else {
         	 // if connection limit reached

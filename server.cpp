@@ -4,6 +4,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <pthread.h> // multi threading
+#include <errno.h>
 
 // Included for count execution time
 #include <time.h>
@@ -21,10 +22,13 @@
 // maximum connection requests queued
 #define QUEUE_CONNECTION 10
 
-// buffer size 1kb
+// buffer size 1KB
 #define BUFFER_SIZE 1024
 
-// currently connections
+// Thread stack size 64KB
+#define THREAD_STACK_SIZE 65536
+
+// current connections
 int connection = 0;
 
 // connection handler function
@@ -37,7 +41,7 @@ int main(int argc, char *argv[]) {
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
 	// stack size 1MB
-	pthread_attr_setstacksize(&attr, 1048576);
+	pthread_attr_setstacksize(&attr, THREAD_STACK_SIZE);
 	
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	
@@ -49,34 +53,34 @@ int main(int argc, char *argv[]) {
 	
 	// creating master socket
 	if ((master_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-		std::cout << "[ERROR] CAN'T CREATE TO SOCKET\n";
-		return 0;
+	    std::cout << "[ERROR] CAN'T CREATE TO SOCKET\n";
+	    return 0;
 	} else {
-		std::cout << "[NOTE] SOCKET CREATED DONE\n";
+	    std::cout << "[NOTE] SOCKET CREATED DONE\n";
 	}
 	
-    // Prepare the sockaddr_in structure
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = inet_addr(ADDRESS);
-    server.sin_port = htons(PORT);
+        // Prepare the sockaddr_in structure
+	server.sin_family = AF_INET;
+	server.sin_addr.s_addr = inet_addr(ADDRESS);
+	server.sin_port = htons(PORT);
     
-    len = sizeof(struct sockaddr_in);
+	len = sizeof(struct sockaddr_in);
     
-    // binding address and port
-    if (bind(master_socket, (struct sockaddr *)&server , sizeof(server)) == -1) {
-    	perror("[ERROR]");
-        return 0;
-    } else {
-    	std::cout << "[NOTE] BINDING DONE\n";
-    }
-    
-    // Listen on the socket, with 40 max connection requests queued
-    if (listen(master_socket, QUEUE_CONNECTION) == -1) {
-    	std::cout << "[ERROR] CAN'T LISTEN\n";
-        return 0;
-    } else {
-    	std::cout << "[INFO] WAITING FOR INCOMING CONNECTIONS\n";
-    }
+	// binding address and port
+	if (bind(master_socket, (struct sockaddr *)&server , sizeof(server)) == -1) {
+	    std::cout << "[ERROR][BIND] " << strerror(errno) << "\n";
+	    return 0;
+	} else {
+    	    std::cout << "[NOTE] BINDING DONE\n";
+	}
+	
+	// Listen on the socket, with 40 max connection requests queued
+	if (listen(master_socket, QUEUE_CONNECTION) == -1) {
+    	    std::cout << "[ERROR] CAN'T LISTEN\n";
+            return 0;
+	} else {
+    	    std::cout << "[INFO] WAITING FOR INCOMING CONNECTIONS\n";
+	}
     
 	// infinity loop
     while (true) {

@@ -83,33 +83,33 @@ int main(int argc, char *argv[]) {
 	}
     
 	// infinity loop
-    while (true) {
-    	// accept new connections
-        conn_id = accept(master_socket, (struct sockaddr*)&client, (socklen_t*)&len);
+	while (true) {
+    	     // accept new connections
+             conn_id = accept(master_socket, (struct sockaddr*)&client, (socklen_t*)&len);
         
-        // if connection not accepted
-        if (conn_id == -1) {
-        	std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION\n";
-        } else {
-        	// if connection limit reached
-        	if (connection >= CONCURRENT_CONNECTION) {
-        	    std::cout << "[WARNING] CONNECTION LIMITE REACHED" << std::endl;
-                send(conn_id, "SERVER IS BUSY.", 15, 0); // send server full to client
-                close(conn_id); // close connection if connection limit reached
-        	} else {
-        	    std::cout << "[INFO] NEW CONNECTION ACCEPTED\n";
-                // create new thread for new connection
-                if (pthread_create(&thread_id, &attr, connection_handler, new int(conn_id)) == -1) {
-                	std::cout << "[WARNING] CAN'T CREATE NEW THREAD\n";
-                    // if the thread is not made then we will close the client connection
-                    close(conn_id);
-                } else {
-                	std::cout << "[INFO] NEW THREAD CREATED\n";
-                    connection++; // increase connection count
-                }
-            }
+             // if connection not accepted
+             if (conn_id == -1) {
+        	 std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION\n";
+             } else {
+        	 // if connection limit reached
+        	 if (connection >= CONCURRENT_CONNECTION) {
+        	     std::cout << "[WARNING] CONNECTION LIMITE REACHED" << std::endl;
+                     send(conn_id, "SERVER IS BUSY.", 15, 0); // send server full to client
+                     close(conn_id); // close connection if connection limit reached
+        	 } else {
+        	     std::cout << "[INFO] NEW CONNECTION ACCEPTED\n";
+                     // create new thread for new connection
+                     if (pthread_create(&thread_id, &attr, connection_handler, new int(conn_id)) == -1) {
+                	 std::cout << "[WARNING] CAN'T CREATE NEW THREAD\n";
+                         // if the thread is not made then we will close the client connection
+                         close(conn_id);
+                     } else {
+                	 std::cout << "[INFO] NEW THREAD CREATED\n";
+                         connection++; // increase connection count
+                     }
+                 }
+             }
         }
-    }
     return 0;
 }
 

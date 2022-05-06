@@ -1,4 +1,4 @@
-<h4>C++ Simple multithread tcp</h4>
+<h4>Note</h4>
 
 <p>Handling default 10 concurrent connection</br>
 You can change the default concurrent limit</p>

@@ -11,7 +11,7 @@
 #include <iomanip>
 
 // server address
-#define ADDRESS "127.0.0.1"
+#define ADDRESS "0.0.0.0"
 
 // port number
 #define PORT 8888
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 	    std::cout << "[ERROR][BIND] " << strerror(errno) << "\n";
 	    return 0;
 	} else {
-    	    std::cout << "[NOTE] BINDING DONE\n";
+    	    std::cout << "[NOTE] BIND " << ADDRESS << ":" << PORT << "\n";
 	}
 	
 	// Listen on the socket, with 40 max connection requests queued

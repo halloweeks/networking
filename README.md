@@ -1,15 +1,14 @@
-<h4>Note</h4>
+<h3>Note</h3>
 
 <p>Handling default 10 concurrent connection</br>
 You can change the default concurrent limit</p>
 
-<p>Open terminal paste command</p>
+<H3>Build</H3>
+<p>Git Clone</p>
 
 ```
 git clone https://github.com/halloweeks/networking.git
 ```
-
-<p>Change directory</p>
 
 ```
 cd networking

@@ -39,11 +39,22 @@ int main(int argc, char *argv[]) {
 	pthread_t thread_id;
 	// thread attribute
 	pthread_attr_t attr;
-	pthread_attr_init(&attr);
+        
+	if (pthread_attr_init(&attr) != 0) {
+            std::cout << "[ERROR][THREAD][INIT] " << strerror(errno) << "\n";
+            return 0;
+        }
+        
 	// stack size 1MB
-	pthread_attr_setstacksize(&attr, THREAD_STACK_SIZE);
+	if (pthread_attr_setstacksize(&attr, THREAD_STACK_SIZE) != 0) {
+            std::cout << "[ERROR][THREAD][STACK] " << strerror(errno) << "\n";
+            return 0;
+        }
 	
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	if (pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED) != 0) {
+            std::cout << "[ERROR][THREAD][DETACH] " << strerror(errno) << "\n";
+            return 0;
+        }
 	
 	int master_socket, conn_id, len;
 	struct sockaddr_in server, client;

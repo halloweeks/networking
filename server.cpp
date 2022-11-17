@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 		std::cout << "[NOTE] BIND " << ADDRESS << ":" << PORT << "\n";
 	}
 	
-	// Listen on the socket, with 40 max connection requests queued
+	// Listen on the socket, with 10 max connection requests queued
 	if (listen(master_socket, QUEUE_CONNECTION) == -1) {
 		std::cout << "[ERROR][LISTEN] " << strerror(errno) << "\n";
 		return -1;

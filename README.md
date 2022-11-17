@@ -3,7 +3,7 @@
 <p>Handling default 10 concurrent connection</br>
 You can change the default concurrent limit</p>
 
-<H3>Build</H3>
+<H3>Build Process</H3>
 <p>Git Clone</p>
 
 ```

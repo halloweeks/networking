@@ -7,7 +7,7 @@ project(networking VERSION 1.0)
 
 # include_directories(include)
 
-add_executable(server.exe server.cpp)
-add_executable(client.exe client.cpp)
+add_executable(server server.cpp)
+add_executable(client client.cpp)
 
-target_link_libraries(server.exe pthread)
+target_link_libraries(server pthread)

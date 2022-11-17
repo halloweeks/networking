@@ -9,63 +9,62 @@
 #define BUFFER_SIZE 1024
 
 int main(int argc, char const *argv[]) {
+	char buffer[BUFFER_SIZE] = {0};
+	std::string input;
 	
-	char ResponseData[BUFFER_SIZE];
-	std::string RequestData;
+	int sock = 0, valread = 0;
+	struct sockaddr_in serv_addr;
 	
-	while (true) {
-		int sock = 0, valread = 0;
-		struct sockaddr_in serv_addr;
+	memset(&serv_addr, 0, sizeof(serv_addr));
 		
-		memset(&serv_addr, 0, sizeof(serv_addr));
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+		std::cout << "[ERROR] CAN'T CREATE SOCKET" << "\n";
+		return 0;
+	}
+	
+	// assign IP, PORT
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_port = htons(PORT);
+	
+	// Convert IPv4 and IPv6 addresses from text to binary form
+	if (inet_pton(AF_INET, ADDRESS, &serv_addr.sin_addr) == -1) {
+		std::cout << "[ERROR] INVALID ADDRESS/ ADDRESS NOT SUPPORTED" << "\n";
+		return 0;
+	}
+	
+	// connect
+	if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) == -1) {
+		std::cout << "[ERROR] CAN'T CONNECT TO THE HOST " << ADDRESS << ":" << PORT << "\n";
+		return -1;
+	}
+	
+	for (;;) {
+		std::cout << "[TCP]> ";
+		std::cin >> input;
 		
-		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-			std::cout << "[ERROR] CAN'T CREATE SOCKET" << std::endl;
-			return 0;
+		if (input == "") {
+			input = "default message";
+		} else if (input == "exit") {
+			std::cout << "Client connection terminated\n";
+			break;
 		}
 		
-		// assign IP, PORT
-		serv_addr.sin_family = AF_INET;
-		serv_addr.sin_port = htons(PORT);
+		if (send(sock, input.c_str(), input.size(), 0) > 0) {
+        	std::cout << "[SEND] " << input << "\n";
+        } else {
+        	std::cout << "Failed to transfer\n";
+        }
 		
-		// Convert IPv4 and IPv6 addresses from text to binary form
-		if (inet_pton(AF_INET, ADDRESS, &serv_addr.sin_addr) == -1) {
-			std::cout << "[ERROR] INVALID ADDRESS/ ADDRESS NOT SUPPORTED" << std::endl;
-			return 0;
-		}
-		
-		// connect
-		if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) == -1) {
-			std::cout << "[ERROR] CAN'T CONNECT TO THE HOST " << ADDRESS << ":" << PORT << std::endl;
-			return 0;
-		}
-		
-		std::cout << "[message]> ";
-		getline(std::cin, RequestData);
-		
-		if (RequestData == "") {
-			RequestData = "default message";
-		}
-		
-		if (send(sock, RequestData.c_str(), BUFFER_SIZE, 0) > 0) {
-			std::cout << "[SEND] " << RequestData << std::endl;
+		if (recv(sock, buffer, BUFFER_SIZE, 0) > 0) {
+			std::cout << "[RECEIVE] " << buffer << "\n";
+			// clear server response data
+			memset(buffer, 0, BUFFER_SIZE);
 		} else {
-			std::cout << "[ERROR] CAN'T SEND MESSAGE TO SERVER" << std::endl;
+			std::cout << "[ERROR] CAN'T READ SERVER RESPONSE" << "\n";
 		}
+	}
 		
-		if (recv(sock, ResponseData, BUFFER_SIZE, 0) > 0) {
-			std::cout << "[RECEIVE] " << ResponseData << std::endl;
-		} else {
-			std::cout << "[ERROR] CAN'T READ SERVER RESPONSE" << std::endl;
-		}
-		
-		// clear server response data
-		memset(ResponseData, 0, BUFFER_SIZE);
-		RequestData = "";
-		
-		// close connection
-		close(sock);
-    }
-    
-  return 0; 
+	// close connection
+	close(sock);
+	return 0; 
 }

@@ -21,7 +21,7 @@
 #define CONCURRENT_CONNECTION 10
 
 // maximum connection requests queued
-#define QUEUE_CONNECTION 10
+#define QUEUE_CONNECTION 20
 
 // buffer size 1KB
 #define BUFFER_SIZE 1024
@@ -63,6 +63,10 @@ int main(int argc, char *argv[]) {
 	memset(&server, 0, sizeof(server));
 	memset(&client, 0, sizeof(client));
 	
+	struct timeval timeout;
+	timeout.tv_sec  = 5;  //  if client not send any data under 5 seconds connection will terminate
+	timeout.tv_usec = 0;
+	
 	// creating master socket
 	if ((master_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		std::cout << "[ERROR] CAN'T CREATE TO SOCKET\n";
@@ -71,7 +75,15 @@ int main(int argc, char *argv[]) {
 		std::cout << "[NOTE] SOCKET CREATED DONE\n";
 	}
 	
-        // Prepare the sockaddr_in structure
+	if (setsockopt(master_socket, SOL_SOCKET, SO_RCVTIMEO,(struct timeval *)&timeout,sizeof(struct timeval)) < 0) {
+		std::cout << "[ERROR] " << strerror(errno) << "\n";
+		// std::cout << "[ERROR] SOCKET INITIALIZATION FAILED\n";
+		return -1;
+	} else {
+		std::cout << "[NOTE] SOCKET INITIALIZATED\n";
+	}
+	
+     // Prepare the sockaddr_in structure
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = inet_addr(ADDRESS);
 	server.sin_port = htons(PORT);
@@ -86,7 +98,7 @@ int main(int argc, char *argv[]) {
 		std::cout << "[NOTE] BIND " << ADDRESS << ":" << PORT << "\n";
 	}
 	
-	// Listen on the socket, with 10 max connection requests queued
+	// Listen on the socket, with 20 max connection requests queued
 	if (listen(master_socket, QUEUE_CONNECTION) == -1) {
 		std::cout << "[ERROR][LISTEN] " << strerror(errno) << "\n";
 		return -1;
@@ -101,9 +113,12 @@ int main(int argc, char *argv[]) {
 		
         // if connection acception failed
         if (conn_id == -1) {
-        	std::cout << "[WARNING] " << strerror(errno) << "\n";
-        	 // std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION\n";
-             } else {
+        	if (errno == 11 || errno == 4) {
+        	    // Just ignore this error
+        	} else {
+        	    std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION " << conn_id << " ERRNO " << errno << "\n";
+            }
+        } else {
         	 // if connection limit reached
         	 if (connection >= CONCURRENT_CONNECTION) {
         	     std::cout << "[WARNING] CONNECTION LIMITE REACHED\n";
@@ -148,7 +163,7 @@ void *connection_handler(void *sock_fd) {
 	char buffer[BUFFER_SIZE] = {0};
 	
 	// response data
-	char response[] = "Hello 🖐️";
+	char response[] = "Hello ðŸ–ï¸";
 	
 	// read response continue
 	while ((read_byte = recv(conn_id, buffer, BUFFER_SIZE, 0)) > 0) {

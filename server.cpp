@@ -63,10 +63,6 @@ int main(int argc, char *argv[]) {
 	memset(&server, 0, sizeof(server));
 	memset(&client, 0, sizeof(client));
 	
-	struct timeval timeout;
-	timeout.tv_sec  = 5;  //  if client not send any data under 5 seconds connection will terminate
-	timeout.tv_usec = 0;
-	
 	// creating master socket
 	if ((master_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		std::cout << "[ERROR] CAN'T CREATE TO SOCKET\n";
@@ -75,13 +71,6 @@ int main(int argc, char *argv[]) {
 		std::cout << "[NOTE] SOCKET CREATED DONE\n";
 	}
 	
-	if (setsockopt(master_socket, SOL_SOCKET, SO_RCVTIMEO,(struct timeval *)&timeout,sizeof(struct timeval)) < 0) {
-		std::cout << "[ERROR] " << strerror(errno) << "\n";
-		// std::cout << "[ERROR] SOCKET INITIALIZATION FAILED\n";
-		return -1;
-	} else {
-		std::cout << "[NOTE] SOCKET INITIALIZATED\n";
-	}
 	
      // Prepare the sockaddr_in structure
 	server.sin_family = AF_INET;
@@ -113,11 +102,7 @@ int main(int argc, char *argv[]) {
 		
         // if connection acception failed
         if (conn_id == -1) {
-        	if (errno == 11 || errno == 4) {
-        	    // Just ignore this error
-        	} else {
-        	    std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION " << conn_id << " ERRNO " << errno << "\n";
-            }
+        	std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION " << conn_id << " ERRNO " << errno << "\n";
         } else {
         	 // if connection limit reached
         	 if (connection >= CONCURRENT_CONNECTION) {

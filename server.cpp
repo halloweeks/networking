@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <pthread.h> // multi threading
 #include <errno.h>
-#include <fstream>
 
 // Included for count execution time
 #include <time.h>

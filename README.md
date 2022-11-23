@@ -15,13 +15,15 @@ cd networking
 ```
 
 <H2>Build Instruction</H2>
-<p>Make sure you have already installed cmake</p>
-<p>Automatic build you need to run build.sh</p>
+<p>Make sure you have already installed g++</p>
 
 ```
-bash build.sh
+g++ server.cpp -o server.exe -lpthread
 ```
 
+```
+g++ client.cpp -o client.exe
+```
 
 <H2>Execution Instruction</H2>
 <p>You got output executable file</p>

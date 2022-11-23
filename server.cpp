@@ -147,7 +147,7 @@ void *connection_handler(void *sock_fd) {
 	char buffer[BUFFER_SIZE] = {0};
 	
 	// response data
-	char response[] = "Hello ðŸ–ï¸";
+	char response[] = "Hello";
 	
 	// read response continue
 	while ((read_byte = recv(conn_id, buffer, BUFFER_SIZE, 0)) > 0) {

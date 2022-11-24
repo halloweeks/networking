@@ -101,19 +101,19 @@ int main(int argc, char *argv[]) {
 		
         // if connection acception failed
         if (conn_id == -1) {
-        	std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION " << conn_id << " ERRNO " << errno << "\n";
+        	std::cout << "[WARNING] CAN'T ACCEPT NEW CONNECTION\n";
         } else {
         	 // if connection limit reached
         	 if (connection >= CONCURRENT_CONNECTION) {
         	     std::cout << "[WARNING] CONNECTION LIMITE REACHED\n";
-                     send(conn_id, "server is busy. please try again later.", 39, 0);
+                     // send(conn_id, "server is busy. please try again later.", 39, 0);
                      close(conn_id); // close connection
         	 } else {
-        	     std::cout << "[INFO] NEW CONNECTION ACCEPTED\n";
+        	     std::cout << "[INFO] NEW CONNECTION ACCEPTED FROM " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << "\n";
                      // create new thread for new connection
                      if (pthread_create(&thread_id, &attr, connection_handler, new int(conn_id)) == -1) {
-                         std::cout << "[WARNING][THREAD] " << strerror(errno) << "\n";
-                	 // std::cout << "[WARNING] CAN'T CREATE NEW THREAD\n";
+                         // std::cout << "[WARNING][THREAD] " << strerror(errno) << "\n";
+                	     std::cout << "[WARNING] CAN'T CREATE NEW THREAD\n";
                          close(conn_id);
                      } else {
                      	std::cout << "[INFO] NEW THREAD CREATED\n";

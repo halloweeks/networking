@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <pthread.h> // multi threading
 #include <errno.h>
+#include <signal.h>
 
 // Included for count execution time
 #include <time.h>
@@ -62,6 +63,8 @@ int main(int argc, char *argv[]) {
 	memset(&server, 0, sizeof(server));
 	memset(&client, 0, sizeof(client));
 	
+        signal(SIGPIPE, SIG_IGN);
+        
 	// creating master socket
 	if ((master_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		std::cout << "[ERROR] CAN'T CREATE TO SOCKET\n";

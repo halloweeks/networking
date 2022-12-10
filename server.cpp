@@ -187,10 +187,10 @@ void *connection_handler(void *sock_fd) {
     
 	// print process time
 	std::cout << "[TIME] PROCESS COMPLETE IN " << std::fixed << time_taken << std::setprecision(5); 
-	std::cout << " SEC" << std::endl;
+	std::cout << " SEC\n";
 	
 	// print line
-	std::cout << "------------------------" << std::endl;
+	std::cout << "------------------------\n";
 	
 	// exiting
 	pthread_exit(NULL);

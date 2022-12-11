@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 	
-	int master_socket, conn_id, len;
+	int master_socket, conn_id;
 	struct sockaddr_in server, client;
 	
 	memset(&server, 0, sizeof(server));
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 	server.sin_addr.s_addr = inet_addr(ADDRESS);
 	server.sin_port = htons(PORT);
     
-	len = sizeof(struct sockaddr_in);
+	socklen_t addrlen = sizeof(struct sockaddr_in);
     
 	// binding address and port
 	if (bind(master_socket, (struct sockaddr *)&server , sizeof(server)) == -1) {
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 	// infinity loop
 	while (true) {
 		// accept new connections
-		conn_id = accept(master_socket, (struct sockaddr*)&client, (socklen_t*)&len);
+		conn_id = accept(master_socket, (struct sockaddr*)&client, (socklen_t*)&addrlen);
 		
         // if connection acception failed
         if (conn_id == -1) {

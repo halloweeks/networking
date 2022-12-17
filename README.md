@@ -2,7 +2,7 @@
 
 <p>Handling default 10 concurrent connection</br>
 You can change the default concurrent limit</p>
-
+<p>I tested 1000 concurrent connection without any problem</p>
 <H2>Installation</H2>
 <p>clone this repository :</p>
 

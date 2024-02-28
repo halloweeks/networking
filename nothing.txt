@@ -1,0 +1,30 @@
+/* This is not for you just ignore it */
+
+
+int byte 100
+Content_Type: Meta
+Content_Length: 120
+[
+	{
+		"property": "value1",
+		"timestamp": "2024-02-28"
+	},
+	{
+		"property": "value2",
+		"timestamp": "2024-03-01"
+	}
+]
+
+byte 50
+Content_Type: File
+Content_Length: 1024
+Filename: test.bin
+(Binary)....
+
+byte 150
+Content_Type: File
+Content_Length: 10
+Compression_Type: gzip
+Filename: test.txt
+
+halloweeks

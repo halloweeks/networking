@@ -1,8 +1,10 @@
-<h2>Note</h2>
+## Description: 
 
-<p>Handling default 10 concurrent connection</br>
-You can change the default concurrent limit</p>
-<p>I tested 1000 concurrent connection without any problem</p>
+This repository contains a concurrent TCP server and client implemented in C++. The server is designed to handle multiple simultaneous connections using pthreads, and the client can connect to the server, send messages, and receive responses. The server is optimized for concurrent connections, and its capacity depends on system resources such as CPU and RAM.
+
+
+
+
 <H2>Installation</H2>
 <p>clone this repository :</p>
 
@@ -14,28 +16,34 @@ git clone https://github.com/halloweeks/networking.git
 cd networking
 ```
 
-<H2>Build Instruction</H2>
-<p>Make sure you have already installed g++</p>
 
-```
-g++ server.cpp -o server.exe -lpthread
-```
+2. Compile and run the server.
 
-```
-g++ client.cpp -o client.exe
-```
+    ```bash
+    g++ server.cpp -o server -pthread
+    ./server
+    ```
 
-<H2>Execution Instruction</H2>
-<p>You got output executable file</p>
+3. The server will start and listen for incoming connections. It is optimized for concurrent connections, and its capacity depends on system resources.
 
-staring the server
 
-```
-./server.exe
-```
+### Client Usage:
 
-starting a client
+1. Open a new terminal window.
 
-```
-./client.exe
-```
+2. Compile and run the client.
+
+    ```bash
+  
+    g++ client.cpp -o client
+    ./client
+    ```
+
+3. The client will connect to the server. Enter messages to send to the server.
+
+### Concurrent Capacity:
+
+- The server is optimized for concurrent connections.
+- The maximum number of concurrent connections depends on your system's CPU, RAM, and other resources.
+- During testing, the server successfully handled up to 200 concurrent connections.
+
